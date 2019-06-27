@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="none">
+        <item
+                android:id="@+id/nav_resistor"
+                android:icon="@drawable/ic_action_resistor"
+                android:title="Rezystor"/>
+        <item
+                android:id="@+id/nav_tension"
+                android:icon="@drawable/ic_action_tension"
+                android:title="Źródło napięcia"/>
+        <item
+                android:id="@+id/nav_flow"
+                android:icon="@drawable/ic_action_flow"
+                android:title="Żródło natężenia"/>
+
+    </group>
+
+
+</menu>
