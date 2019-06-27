@@ -7,17 +7,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:openDrawer="start">
+        tools:openDrawer="start" android:foregroundGravity="bottom|right">
 
+    <include
+            layout="@layout/main_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" tools:visibility="invisible"/>
 
-
-
-    <com.example.canvastest.CircuitView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:id="@+id/circuitView"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"/>
 
     <android.support.design.widget.NavigationView
             android:id="@+id/nav_view"
@@ -26,6 +22,6 @@
             android:layout_gravity="start"
             android:fitsSystemWindows="true"
             app:headerLayout="@layout/nav_header_main"
-            app:menu="@menu/activity_main_drawer"/>
+            app:menu="@menu/activity_main_drawer" tools:visibility="invisible"/>
 
 </android.support.v4.widget.DrawerLayout>

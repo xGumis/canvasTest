@@ -20,6 +20,13 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     private var mCurY = 0f
     private var mStartX = 0f
     private var mStartY = 0f
+    private var wasSomethigSelected: Element? = null
+        set(value) {
+            field=value
+            onSelectedChange(value != null)
+        }
+    var onSelectedChange:(selected:Boolean)->Unit ={}
+
 
     init {
         isFocusable = true
@@ -47,6 +54,7 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                 else -> {}
             }
         }
+        wasSomethigSelected = catchedElement
 
     }
 
@@ -135,5 +143,20 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     fun clearCanvas() {
         elements.clear()
         invalidate()
+    }
+
+    fun onDeleteSelectedView()
+    {
+
+    }
+
+    fun onEditSelectedView()
+    {
+
+    }
+
+    private fun editResistor()
+    {
+
     }
 }

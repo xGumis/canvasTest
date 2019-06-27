@@ -6,11 +6,29 @@ import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
+import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import com.example.canvastest.Elements.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.circuit_view.*
+import kotlinx.android.synthetic.main.main_content.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    private var buttonsVisibility:Boolean= false
+        set(value) {
+            field = value
+            if (value) {
+                fab_delete.show()
+                fab_edit.show()
+            }
+            else {
+                fab_delete.hide()
+                fab_edit.hide()
+            }
+
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +37,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         circuitView.addElement(Resistor(Point(100, 300), Point(300, 300)))
         circuitView.addElement(TensionSource(Point(100,500),Point(300,500)))
 
+
         nav_view.setNavigationItemSelectedListener(this)
+        buttonsVisibility = false
+        circuitView.onSelectedChange = {
+            buttonsVisibility = it
+        }
+        fab_delete.setOnClickListener {
+            circuitView.onDeleteSelectedView()
+        }
+        fab_edit.setOnClickListener {
+            circuitView.onEditSelectedView()
+        }
     }
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
@@ -39,4 +68,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
+
+
 }
