@@ -9,10 +9,27 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.view.MenuItem
 import com.example.canvastest.model.*
+
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.circuit_view.*
+import kotlinx.android.synthetic.main.main_content.*
 import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    private var buttonsVisibility:Boolean= false
+        set(value) {
+            field = value
+            if (value) {
+                fab_delete.show()
+                fab_edit.show()
+            }
+            else {
+                fab_delete.hide()
+                fab_edit.hide()
+            }
+
+        }
 
     private var nodeMap = mutableMapOf<Int, mNode>()
     private var synapses: MutableList<mSynapse> = mutableListOf()
@@ -25,6 +42,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         circuitView.addElement(TensionSource(Point(100, 500), Point(300, 500)))
 
         nav_view.setNavigationItemSelectedListener(this)
+        buttonsVisibility = false
+        circuitView.onSelectedChange = {
+            buttonsVisibility = it
+        }
+        fab_delete.setOnClickListener {
+            circuitView.onDeleteSelectedView()
+        }
+        fab_edit.setOnClickListener {
+            circuitView.onEditSelectedView()
+        }
+
+
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
