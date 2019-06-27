@@ -10,8 +10,9 @@ import kotlin.math.pow
 
 class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
-    private var elements: MutableList<Element> = mutableListOf()
-    var paint: Paint = Paint()
+    var elements: MutableList<Element> = mutableListOf()
+    var joints = mutableListOf<Joint>()
+    private var paint: Paint = Paint()
     private var catchedElement: Element? = null
     private var isStartCatched = true
     private var isEdgeCatched = false
@@ -20,7 +21,6 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     private var mCurY = 0f
     private var mStartX = 0f
     private var mStartY = 0f
-    private var joints = mutableListOf<Joint>()
 
     init {
         isFocusable = true
@@ -228,6 +228,10 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         joints.forEach {
             if (it.elementsJoined.contains(oldEl)) {
                 it.elementsJoined.add(newEl)
+                if(newEl.second)
+                    newEl.first.startJoint = it
+                else
+                    newEl.first.endJoint = it
                 return
             }
         }
@@ -235,9 +239,22 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         joint.elementsJoined.add(newEl)
         joint.elementsJoined.add(oldEl)
         joints.add(joint)
+        if(newEl.second)
+            newEl.first.startJoint = joint
+        else
+            newEl.first.endJoint = joint
+        if(oldEl.second)
+            oldEl.first.startJoint = joint
+        else
+            oldEl.first.endJoint = joint
+        
     }
 
     private fun unjoinElement(el: Pair<Element, Boolean>) {
+        if(el.second)
+            el.first.startJoint = null
+        else
+            el.first.endJoint = null
         var emptyJoint: Joint? = null
         joints.forEach {
             if (it.elementsJoined.contains(el)) {
@@ -246,11 +263,18 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                     emptyJoint = it
             }
         }
-        emptyJoint?.let { joints.remove(it) }
+        emptyJoint?.let {
+            if(it.elementsJoined.first().second)
+                it.elementsJoined.first().first.startJoint = null
+            else
+                it.elementsJoined.first().first.endJoint = null
+            joints.remove(it)
+        }
     }
 
     fun clearCanvas() {
         elements.clear()
+        joints.clear()
         invalidate()
     }
 }

@@ -7,6 +7,8 @@ import kotlin.math.pow
 open class Element(private var sp: Point,private var ep: Point) : Shape() {
     private val HEIGHT = 70.0
     private val MIN_WIDTH = 150.0
+    var startJoint : Joint? = null
+    var endJoint : Joint? = null
     var startPoint: Point
         get(){
             return sp
