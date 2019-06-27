@@ -1,4 +1,4 @@
-package com.example.canvastest.model
+package com.example.canvastest.Model
 class mSynapse
 {
     var from :mNode? = null

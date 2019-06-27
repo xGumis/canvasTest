@@ -1,4 +1,4 @@
-package com.example.canvastest.elements
+package com.example.canvastest.Elements
 
 import android.graphics.*
 import android.graphics.drawable.shapes.Shape

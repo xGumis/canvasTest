@@ -3,7 +3,7 @@ package com.example.canvastest
 import android.graphics.Point
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import com.example.canvastest.Elements.*
+import com.example.canvastest.elements.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

@@ -5,7 +5,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.example.canvastest.Elements.Element
+import com.example.canvastest.elements.Element
 import kotlin.math.pow
 
 class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) {

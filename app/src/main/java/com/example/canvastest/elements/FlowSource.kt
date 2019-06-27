@@ -1,24 +1,26 @@
-package com.example.canvastest.elements
+package com.example.canvastest.Elements
 
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Point
 import kotlin.math.pow
 
-class TensionSource(startPoint : Point, endPoint : Point, var tensionValue : Double = 5.0) : Element(startPoint,endPoint){
+class FlowSource(startPoint: Point, endPoint:Point, var flowValue : Double = 5.0):Element(startPoint,endPoint) {
     override fun draw(canvas: Canvas?, paint: Paint?) {
         //super.draw(canvas, paint)
-        val g = 5f
+        val r = 30f
+        canvas?.drawCircle(centerX,centerY,r,paint)
         val vsc = Point(centerX.toInt()-startPoint.x,centerY.toInt()-startPoint.y)
         var l = Math.sqrt(vsc.x.toDouble().pow(2)+vsc.y.toDouble().pow(2))
-        val s = 1.0 - (g/l)
+        var s = 1.0 - (r/l)
         canvas?.drawLine(startPoint.x.toFloat(),startPoint.y.toFloat(),(startPoint.x+(vsc.x*s)).toFloat(),(startPoint.y+(vsc.y*s)).toFloat(),paint)
         canvas?.drawLine(endPoint.x.toFloat(),endPoint.y.toFloat(),(endPoint.x+(-vsc.x*s)).toFloat(),(endPoint.y+(-vsc.y*s)).toFloat(),paint)
+        s = (20.0/l)
+        canvas?.drawLine((centerX-(vsc.x*s)).toFloat(),(centerY-(vsc.y*s)).toFloat(),(centerX+(vsc.x*s)).toFloat(),(centerY+(vsc.y*s)).toFloat(),paint)
         val x = (-vsc.y.toDouble()/vsc.x.toDouble())
         l = Math.sqrt(x.pow(2)+1)
-        var ss = 15f/l
-        canvas?.drawLine((startPoint.x+(vsc.x*s)-(x*ss)).toFloat(),(startPoint.y+(vsc.y*s)-(ss)).toFloat(),(startPoint.x+(vsc.x*s)+(x*ss)).toFloat(),(startPoint.y+(vsc.y*s)+(ss)).toFloat(),paint)
-        ss = 25f/l
-        canvas?.drawLine((endPoint.x+(-vsc.x*s)-(x*ss)).toFloat(),(endPoint.y+(-vsc.y*s)-(ss)).toFloat(),(endPoint.x+(-vsc.x*s)+(x*ss)).toFloat(),(endPoint.y+(-vsc.y*s)+(ss)).toFloat(),paint)
+        val ss = (15.0/l)
+        canvas?.drawLine((centerX-(x*ss)).toFloat(),(centerY-(ss)).toFloat(),(centerX+(vsc.x*s)).toFloat(),(centerY+(vsc.y*s)).toFloat(),paint)
+        canvas?.drawLine((centerX+(x*ss)).toFloat(),(centerY+(ss)).toFloat(),(centerX+(vsc.x*s)).toFloat(),(centerY+(vsc.y*s)).toFloat(),paint)
     }
 }
