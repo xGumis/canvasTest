@@ -1,5 +1,6 @@
 package com.example.canvastest
 
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -7,6 +8,16 @@ import android.view.MotionEvent
 import android.view.View
 import com.example.canvastest.elements.*
 import kotlin.math.pow
+import android.content.DialogInterface
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
+
+import android.text.InputType
+
+
+
+
 
 class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
@@ -229,7 +240,7 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         return true
     }
 
-    fun addElement(element: Element) {
+    fun addElement(element: Element){
         elements.add(element)
     }
 
@@ -265,16 +276,92 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
 
     fun onDeleteSelectedView()
     {
-
+        if(wasSomethigSelected != null) {
+            unjoinElement(Pair(wasSomethigSelected!!, true))
+            unjoinElement(Pair(wasSomethigSelected!!, false))
+            elements.remove(wasSomethigSelected!!)
+            wasSomethigSelected = null
+        }
+        invalidate()
     }
 
     fun onEditSelectedView()
     {
-
+        when(wasSomethigSelected){
+            is Resistor -> editResistor(wasSomethigSelected as Resistor)
+            is FlowSource -> editFlow(wasSomethigSelected as FlowSource)
+            is TensionSource -> editTension(wasSomethigSelected as TensionSource)
+        }
     }
 
-    private fun editResistor()
+    private fun editResistor(resistor:Resistor)
     {
+        val layout = LinearLayout(context)
+        layout.orientation = LinearLayout.VERTICAL
+        val info = TextView(context)
+        info.text = "Opór"
+        val input = EditText(context)
+        input.setRawInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL)
+        input.setText(resistor.resistance.toString())
 
+        layout.addView(info)
+        layout.addView(input)
+        AlertDialog.Builder(context)
+            .setTitle("Opornik")
+            .setView(layout)
+            .setPositiveButton(android.R.string.yes, DialogInterface.OnClickListener { dialog, which ->
+                resistor.resistance = input.text.toString().toDouble()
+            })
+            .setNegativeButton(android.R.string.no, null)
+            .setIcon(R.drawable.ic_action_resistor)
+            .show()
     }
+
+    private fun editFlow(flow:FlowSource)
+    {
+        val layout = LinearLayout(context)
+        layout.orientation = LinearLayout.VERTICAL
+        val info = TextView(context)
+        info.text = "Źródło"
+        val input = EditText(context)
+        input.setRawInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL)
+        input.setText(flow.flowValue.toString())
+
+        layout.addView(info)
+        layout.addView(input)
+        AlertDialog.Builder(context)
+            .setTitle("Natężenie")
+            .setView(layout)
+            .setPositiveButton(android.R.string.yes, DialogInterface.OnClickListener { dialog, which ->
+                flow.flowValue = input.text.toString().toDouble()
+            })
+            .setNegativeButton(android.R.string.no, null)
+            .setIcon(R.drawable.ic_action_flow)
+            .show()
+    }
+
+    private fun editTension(tension:TensionSource)
+    {
+        val layout = LinearLayout(context)
+        layout.orientation = LinearLayout.VERTICAL
+        val info = TextView(context)
+        info.text = "Źródło"
+        val input = EditText(context)
+        input.setRawInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL)
+        input.setText(tension.tensionValue.toString())
+
+        layout.addView(info)
+        layout.addView(input)
+        AlertDialog.Builder(context)
+            .setTitle("Natężenie")
+            .setView(layout)
+            .setPositiveButton(android.R.string.yes, DialogInterface.OnClickListener { dialog, which ->
+                tension.tensionValue = input.text.toString().toDouble()
+            })
+            .setNegativeButton(android.R.string.no, null)
+            .setIcon(R.drawable.ic_action_tension)
+            .show()
+    }
+
+
 }

@@ -5,6 +5,14 @@
 
     <group android:checkableBehavior="none">
         <item
+                android:id="@+id/nav_play"
+                android:icon="@android:drawable/ic_media_play"
+                android:title="Rezystor"/>
+
+
+    </group>
+    <group android:checkableBehavior="none">
+        <item
                 android:id="@+id/nav_resistor"
                 android:icon="@drawable/ic_action_resistor"
                 android:title="Rezystor"/>
@@ -18,6 +26,8 @@
                 android:title="Żródło natężenia"/>
 
     </group>
+
+
 
 
 </menu>
