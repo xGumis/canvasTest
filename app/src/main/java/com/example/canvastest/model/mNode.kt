@@ -1,4 +1,4 @@
-package com.example.canvastest.Model
+package com.example.canvastest.model
 class mNode {
     companion object {
         var nodeList = mutableListOf<mNode>()
@@ -45,8 +45,6 @@ class mNode {
             return tmpNodeList
         }
         fun updatePotential(){
-
-
             var matrix = Array(nodeList.size -1){DoubleArray(nodeList.size-1) }
             var equal = DoubleArray(nodeList.size-1){0.0}
 

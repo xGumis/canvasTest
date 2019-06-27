@@ -1,4 +1,4 @@
-package com.example.canvastest.Elements
+package com.example.canvastest.elements
 
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -18,7 +18,7 @@ class TensionSource(startPoint : Point, endPoint : Point, var tensionValue : Dou
         l = Math.sqrt(x.pow(2)+1)
         var ss = 15f/l
         canvas?.drawLine((startPoint.x+(vsc.x*s)-(x*ss)).toFloat(),(startPoint.y+(vsc.y*s)-(ss)).toFloat(),(startPoint.x+(vsc.x*s)+(x*ss)).toFloat(),(startPoint.y+(vsc.y*s)+(ss)).toFloat(),paint)
-        ss = 25f/l
+        ss = 30f/l
         canvas?.drawLine((endPoint.x+(-vsc.x*s)-(x*ss)).toFloat(),(endPoint.y+(-vsc.y*s)-(ss)).toFloat(),(endPoint.x+(-vsc.x*s)+(x*ss)).toFloat(),(endPoint.y+(-vsc.y*s)+(ss)).toFloat(),paint)
     }
 }

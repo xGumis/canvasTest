@@ -1,4 +1,4 @@
-package com.example.canvastest.Elements
+package com.example.canvastest.elements
 
 import android.graphics.*
 import android.graphics.drawable.shapes.Shape
@@ -6,7 +6,7 @@ import kotlin.math.pow
 
 open class Element(private var sp: Point,private var ep: Point) : Shape() {
     private val HEIGHT = 70.0
-    private val MIN_WIDTH = 200.0
+    private val MIN_WIDTH = 150.0
     var startPoint: Point
         get(){
             return sp

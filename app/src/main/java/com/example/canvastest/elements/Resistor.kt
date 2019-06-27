@@ -10,8 +10,8 @@ class Resistor(startPoint: Point, endPoint: Point,var resistance : Double = 1.0)
     override fun draw(canvas: Canvas?, paint: Paint?) {
         //super.draw(canvas, paint) //zakomentowany usuwa boxa
         val path = Path()
-        val X = 50.0
-        val Y = 20.0
+        val X = 30.0
+        val Y = 12.0
         path.moveTo(((-X)*Math.cos(ROTATION)-(Y)*Math.sin(ROTATION) + centerX).toFloat(),((Y)*Math.cos(ROTATION)+(-X)*Math.sin(ROTATION) + centerY).toFloat())
         path.lineTo(((X)*Math.cos(ROTATION)-(Y)*Math.sin(ROTATION) + centerX).toFloat(),((Y)*Math.cos(ROTATION)+(X)*Math.sin(ROTATION) + centerY).toFloat())
         path.lineTo(((X)*Math.cos(ROTATION)-(-Y)*Math.sin(ROTATION) + centerX).toFloat(),((-Y)*Math.cos(ROTATION)+(X)*Math.sin(ROTATION) + centerY).toFloat())

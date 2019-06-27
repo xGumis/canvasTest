@@ -1,4 +1,4 @@
-package com.example.canvastest.Elements
+package com.example.canvastest.elements
 
 import android.graphics.Canvas
 import android.graphics.Paint
