@@ -100,21 +100,12 @@ open class Element(private var sp: Point,private var ep: Point) : Shape() {
         if (radCircle < CATCHCAP) {
             return Catch.END
         }
-        if (startPoint.x <= endPoint.x && startPoint.y <= endPoint.y){
-            if(x >= top_left.x && x <= bottom_right.x && y <= top_right.y && y >= bottom_left.y)
-                return Catch.YES
-        }
-        if (startPoint.x <= endPoint.x && startPoint.y >= endPoint.y){
-            if(x <= top_right.x && x >= bottom_left.x && y >= bottom_right.y && y <= top_left.y)
-                return Catch.YES
-        }
-        if (startPoint.x >= endPoint.x && startPoint.y <= endPoint.y){
-            if(x <= bottom_left.x && x >= top_right.x && y >= top_left.y && y <= bottom_right.y)
-                return Catch.YES
-        }
-        if (startPoint.x >= endPoint.x && startPoint.y >= endPoint.y){
-            if(x <= top_left.x && x >= bottom_right.x && y >= top_right.y && y <= bottom_left.y)
-                return Catch.YES
+        val X = x - centerX
+        val Y = y - centerY
+        val rp = Point((X*Math.cos(-ROTATION)-Y*Math.sin(-ROTATION) + centerX).toInt(),(Y*Math.cos(-ROTATION)+X*Math.sin(-ROTATION) + centerY).toInt())
+        val rect = Rect((centerX-(WIDTH/2)).toInt(),(centerY-(HEIGHT/2)).toInt(),(centerX+(WIDTH/2)).toInt(),(centerY+(HEIGHT/2)).toInt())
+        if (rect.contains(rp.x,rp.y)){
+            return Catch.YES
         }
         return Catch.NO
     }
