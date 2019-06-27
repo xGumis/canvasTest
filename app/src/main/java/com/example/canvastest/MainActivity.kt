@@ -13,5 +13,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         circuitView.addElement(FlowSource(Point(100, 100), Point(300, 100)))
         circuitView.addElement(Resistor(Point(100, 300), Point(300, 300)))
+        circuitView.addElement(TensionSource(Point(100,500),Point(300,500)))
     }
 }
