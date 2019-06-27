@@ -33,8 +33,7 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        elements.forEach{it.draw(canvas,paint)
-        }
+        elements.forEach{it.draw(canvas,paint)}
     }
 
     private fun actionDown(x: Float, y: Float) {
@@ -82,7 +81,6 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
             elements.forEach {
                 if(ce != it){
                     var radCircle = Math.sqrt((it.startPoint.x - sx).toDouble().pow(2) + (it.startPoint.y - sy).toDouble().pow(2))
-                    println(radCircle)
                     if(radCircle < PULLCAP)
                         ce.startPoint = Point(it.startPoint)
                     radCircle = Math.sqrt((it.startPoint.x - ex).toDouble().pow(2) + (it.startPoint.y - ey).toDouble().pow(2))
@@ -109,13 +107,27 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                 mStartX = x
                 mStartY = y
                 actionDown(x, y)
+                isPressed = true
             }
             MotionEvent.ACTION_MOVE -> actionMove(x, y)
-            MotionEvent.ACTION_UP -> actionUp()
+            MotionEvent.ACTION_UP -> {
+                actionUp()
+                val radCircle = Math.sqrt((mCurX - mStartX).toDouble().pow(2) + (mCurY - mStartY).toDouble().pow(2))
+                if(radCircle<5)
+                    performClick()
+                isPressed = false
+            }
         }
         invalidate()
         return true
     }
+
+    override fun performClick(): Boolean {
+        super.performClick()
+        println("click")
+        return true
+    }
+
     fun addElement(element: Element){
         elements.add(element)
     }

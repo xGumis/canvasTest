@@ -8,7 +8,7 @@ import kotlin.math.pow
 
 class Resistor(startPoint: Point, endPoint: Point,var resistance : Double = 1.0) : Element(startPoint,endPoint) {
     override fun draw(canvas: Canvas?, paint: Paint?) {
-        super.draw(canvas, paint) //zakomentowany usuwa boxa
+        //super.draw(canvas, paint) //zakomentowany usuwa boxa
         val path = Path()
         val X = 50.0
         val Y = 20.0
