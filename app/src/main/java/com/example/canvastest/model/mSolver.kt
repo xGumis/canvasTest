@@ -1,4 +1,4 @@
-package com.example.canvastest.Model
+package com.example.canvastest.model
 class mSolver() {
     companion object {
 
