@@ -1,11 +1,14 @@
 package com.example.canvastest.model
 
+import com.example.canvastest.elements.Synapse
+
 class mNode {
     companion object {
         var nodeList = mutableListOf<mNode>()
         fun mergeNodes(): MutableMap<mNode, Pair<mNode, Double>> {
             val tmpNodeList = mutableMapOf<mNode, Pair<mNode, Double>>()
             nodeList.forEach { node ->
+                val synapsesToDel = arrayListOf<mSynapse>()
                 node.synapses.forEach { synapse ->
                     if (synapse.flowSource == null)
                         if (synapse.resistance == 0.0) {
@@ -42,11 +45,16 @@ class mNode {
                                         node.synapses.add(it)
                                     }
                                 }
-                                nodeList.remove(nodeX)
                             }
-                            node.synapses.remove(synapse)
+                            synapsesToDel.add(synapse)
                         }
                 }
+                synapsesToDel.forEach{
+                    node.synapses.remove(it)
+                }
+            }
+            tmpNodeList.keys.forEach{
+                nodeList.remove(it)
             }
             return tmpNodeList
         }
@@ -96,7 +104,7 @@ class mNode {
                 }
             }
 
-            var result = mSolver.lsolve(matrix, equal)
+            var result = mSolver.solve(matrix, equal)
             nodeList.forEachIndexed { i, it ->
                 if (groundedNode != it)
                     it.potential = result[i]

@@ -80,7 +80,6 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                 else -> {
                 }
             }
-            println(it.isCatched(x, y))
         }
         wasSomethigSelected = catchedElement
 
@@ -113,95 +112,41 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
             val sy = ce.startPoint.y
             val ex = ce.endPoint.x
             val ey = ce.endPoint.y
-            if (!isEdgeCatched)
-                run breaker@{
-                    elements.forEach {
-                        if (ce != it) {
-                            var radCircle = Math.sqrt(
-                                (it.startPoint.x - sx).toDouble().pow(2) + (it.startPoint.y - sy).toDouble().pow(2)
-                            )
-                            if (radCircle < PULLCAP) {
-                                ce.startPoint = Point(it.startPoint)
-                                val newEl = Pair(ce, true)
-                                val oldEl = Pair(it, true)
-                                joinElements(newEl, oldEl)
-                                return@breaker
-                            }
-                            radCircle = Math.sqrt(
-                                (it.startPoint.x - ex).toDouble().pow(2) + (it.startPoint.y - ey).toDouble().pow(2)
-                            )
-                            if (radCircle < PULLCAP) {
-                                ce.endPoint = Point(it.startPoint)
-                                val newEl = Pair(ce, false)
-                                val oldEl = Pair(it, true)
-                                joinElements(newEl, oldEl)
-                                return@breaker
-                            }
-                            radCircle =
-                                Math.sqrt((it.endPoint.x - sx).toDouble().pow(2) + (it.endPoint.y - sy).toDouble().pow(2))
-                            if (radCircle < PULLCAP) {
-                                ce.startPoint = Point(it.endPoint)
-                                val newEl = Pair(ce, true)
-                                val oldEl = Pair(it, false)
-                                joinElements(newEl, oldEl)
-                                return@breaker
-                            }
-                            radCircle =
-                                Math.sqrt((it.endPoint.x - ex).toDouble().pow(2) + (it.endPoint.y - ey).toDouble().pow(2))
-                            if (radCircle < PULLCAP) {
-                                ce.endPoint = Point(it.endPoint)
-                                val newEl = Pair(ce, false)
-                                val oldEl = Pair(it, false)
-                                joinElements(newEl, oldEl)
-                                return@breaker
-                            }
-                        }
+            elements.forEach {
+                if (ce != it) {
+                    var radCircle = Math.sqrt(
+                        (it.startPoint.x - sx).toDouble().pow(2) + (it.startPoint.y - sy).toDouble().pow(2)
+                    )
+                    if (radCircle < PULLCAP) {
+                        ce.startPoint = Point(it.startPoint)
+                        val newEl = Pair(ce, true)
+                        val oldEl = Pair(it, true)
+                        joinElements(newEl, oldEl)
                     }
-                }
-            else run breaker@{
-                elements.forEach {
-                    if (ce != it) {
-                        if (isStartCatched) {
-                            var radCircle = Math.sqrt(
-                                (it.startPoint.x - sx).toDouble().pow(2) + (it.startPoint.y - sy).toDouble().pow(2)
-                            )
-                            if (radCircle < PULLCAP) {
-                                ce.startPoint = Point(it.startPoint)
-                                val newEl = Pair(ce, true)
-                                val oldEl = Pair(it, true)
-                                joinElements(newEl, oldEl)
-                                return@breaker
-                            }
-                            radCircle =
-                                Math.sqrt((it.endPoint.x - sx).toDouble().pow(2) + (it.endPoint.y - sy).toDouble().pow(2))
-                            if (radCircle < PULLCAP) {
-                                ce.startPoint = Point(it.endPoint)
-                                val newEl = Pair(ce, true)
-                                val oldEl = Pair(it, false)
-                                joinElements(newEl, oldEl)
-                                return@breaker
-                            }
-                        } else {
-                            var radCircle = Math.sqrt(
-                                (it.startPoint.x - ex).toDouble().pow(2) + (it.startPoint.y - ey).toDouble().pow(2)
-                            )
-                            if (radCircle < PULLCAP) {
-                                ce.endPoint = Point(it.startPoint)
-                                val newEl = Pair(ce, false)
-                                val oldEl = Pair(it, true)
-                                joinElements(newEl, oldEl)
-                                return@breaker
-                            }
-                            radCircle =
-                                Math.sqrt((it.endPoint.x - ex).toDouble().pow(2) + (it.endPoint.y - ey).toDouble().pow(2))
-                            if (radCircle < PULLCAP) {
-                                ce.endPoint = Point(it.endPoint)
-                                val newEl = Pair(ce, false)
-                                val oldEl = Pair(it, false)
-                                joinElements(newEl, oldEl)
-                                return@breaker
-                            }
-                        }
+                    radCircle = Math.sqrt(
+                        (it.startPoint.x - ex).toDouble().pow(2) + (it.startPoint.y - ey).toDouble().pow(2)
+                    )
+                    if (radCircle < PULLCAP) {
+                        ce.endPoint = Point(it.startPoint)
+                        val newEl = Pair(ce, false)
+                        val oldEl = Pair(it, true)
+                        joinElements(newEl, oldEl)
+                    }
+                    radCircle =
+                        Math.sqrt((it.endPoint.x - sx).toDouble().pow(2) + (it.endPoint.y - sy).toDouble().pow(2))
+                    if (radCircle < PULLCAP) {
+                        ce.startPoint = Point(it.endPoint)
+                        val newEl = Pair(ce, true)
+                        val oldEl = Pair(it, false)
+                        joinElements(newEl, oldEl)
+                    }
+                    radCircle =
+                        Math.sqrt((it.endPoint.x - ex).toDouble().pow(2) + (it.endPoint.y - ey).toDouble().pow(2))
+                    if (radCircle < PULLCAP) {
+                        ce.endPoint = Point(it.endPoint)
+                        val newEl = Pair(ce, false)
+                        val oldEl = Pair(it, false)
+                        joinElements(newEl, oldEl)
                     }
                 }
             }
@@ -246,11 +191,13 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     private fun joinElements(newEl: Pair<Element, Boolean>, oldEl: Pair<Element, Boolean>) {
         joints.forEach {
             if (it.elementsJoined.contains(oldEl)) {
+                if(!it.elementsJoined.contains(newEl)){
                 it.elementsJoined.add(newEl)
                 if (newEl.second)
                     newEl.first.startJoint = it
                 else
                     newEl.first.endJoint = it
+                }
                 return
             }
         }
@@ -427,9 +374,8 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                                         synapse.to = it
                                         synapseList.add(synapse)
                                         found = true
-                                    }
-                                    else{
-                                        pair = it.elementsJoined.filter{ x -> x != Pair(pair.first,false) }.first()
+                                    } else {
+                                        pair = it.elementsJoined.filter { x -> x != Pair(pair.first, false) }.first()
                                     }
                                 }
                             } else {
@@ -438,9 +384,8 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                                         synapse.to = it
                                         synapseList.add(synapse)
                                         found = true
-                                    }
-                                    else{
-                                        pair = it.elementsJoined.filter{ x -> x != Pair(pair.first,true) }.first()
+                                    } else {
+                                        pair = it.elementsJoined.filter { x -> x != Pair(pair.first, true) }.first()
                                     }
                                 }
                             }
@@ -456,7 +401,7 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         return synapseList
     }
 
-    private fun findNodes(){
+    private fun findNodes() {
         for (i in 0..joints.count() - 1)
             if (joints[i].elementsJoined.count() > 2) {
                 tNodes.add(i)

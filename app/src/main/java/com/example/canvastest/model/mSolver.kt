@@ -51,5 +51,48 @@ class mSolver() {
             }
             return x
         }
+        fun solve(A: Array<DoubleArray>, B: DoubleArray) : DoubleArray{
+            val N = B.size
+            for (k in 0 until N) {
+                /** find pivot row  */
+                var max = k
+                for (i in k + 1 until N)
+                    if (Math.abs(A[i][k]) > Math.abs(A[max][k]))
+                        max = i
+
+                /** swap row in A matrix  */
+                val temp = A[k]
+                A[k] = A[max]
+                A[max] = temp
+
+                /** swap corresponding values in constants matrix  */
+                val t = B[k]
+                B[k] = B[max]
+                B[max] = t
+
+                /** pivot within A and B  */
+                for (i in k + 1 until N) {
+                    val factor = A[i][k] / A[k][k]
+                    B[i] -= factor * B[k]
+                    for (j in k until N)
+                        A[i][j] -= factor * A[k][j]
+                }
+            }
+
+            /** Print row echelon form  */
+            // printRowEchelonForm(A, B)
+
+            /** back substitution  */
+            val solution = DoubleArray(N)
+            for (i in N - 1 downTo 0) {
+                var sum = 0.0
+                for (j in i + 1 until N)
+                    sum += A[i][j] * solution[j]
+                solution[i] = (B[i] - sum) / A[i][i]
+            }
+            /** Print solution  */
+            //printSolution(solution)
+            return solution
+        }
     }
 }

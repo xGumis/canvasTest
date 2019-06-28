@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_play -> {
                 val synapses = circuitView.findSynapses()
                 translateElements(synapses)
+                mNode.groundedNode = mNode.nodeList.firstOrNull()
                 mNode.updatePotential()
             }
         }
@@ -85,7 +86,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (it.isValid) {
                     val synapse = mSynapse()
                     synapse.from = translateNodeArray[it.from]
+                    if(!synapse.from!!.synapses.contains(synapse))
+                        synapse.from!!.synapses.add(synapse)
                     synapse.to = translateNodeArray[it.to]
+                    if(!synapse.to!!.synapses.contains(synapse))
+                        synapse.to!!.synapses.add(synapse)
                     for (i in 0..it.elements.size - 1) {
                         if (it.elements[i] is Resistor) {
                             val resistor = mResistor()
@@ -135,10 +140,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         }
-        translateNodeArray.forEach{
-            mNode.nodeList.add(it.value)
-        }
-        mNode.groundedNode = mNode.nodeList.firstOrNull()
     }
 
 }
