@@ -1,14 +1,12 @@
 package com.example.canvastest.model
 
-import com.example.canvastest.elements.Synapse
-
 class mNode {
     companion object {
         var nodeList = mutableListOf<mNode>()
         fun mergeNodes(): MutableMap<mNode, Pair<mNode, Double>> {
             val tmpNodeList = mutableMapOf<mNode, Pair<mNode, Double>>()
             nodeList.forEach { node ->
-                val synapsesToDel = arrayListOf<mSynapse>()
+                val synapseToDel = mutableListOf<mSynapse>()
                 node.synapses.forEach { synapse ->
                     if (synapse.flowSource == null)
                         if (synapse.resistance == 0.0) {
@@ -46,10 +44,10 @@ class mNode {
                                     }
                                 }
                             }
-                            synapsesToDel.add(synapse)
+                           synapseToDel.add(synapse)
                         }
                 }
-                synapsesToDel.forEach{
+                synapseToDel.forEach {
                     node.synapses.remove(it)
                 }
             }
