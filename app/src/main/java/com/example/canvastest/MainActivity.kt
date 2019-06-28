@@ -77,6 +77,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun findSynapses() {
+        synapses.clear()
+        nodeMap.clear()
         findNodes()
         var chckd = mutableMapOf<Int, ArrayList<Int>>()
         nodeMap.forEach { chckd[it.key] = arrayListOf() }
@@ -87,7 +89,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (!chckd[start]!!.contains(ind)) {
                     chckd[start]!!.add(ind)
                     var pair = it
-                    while (true) {
+                    var done = false
+                    while (!done) {
                         if (pair.second)
                             if (pair.first.endJoint != null) {
                                 pair.first.endJoint?.let { joint ->
@@ -97,9 +100,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                         chckd[i]!!.add(ind)
                                         val synapse = mSynapse()
                                         synapse.to = nodeMap[i]
-                                        nodeMap[i]!!.synapses.add(synapse)
                                         synapse.from = nodeMap[start]
-                                        nodeMap[start]!!.synapses.add(synapse)
+                                        synapses.add(synapse)
+                                        done = true
                                     } else {
                                         joint.elementsJoined.forEach {
                                             if (pair != it)
@@ -112,13 +115,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             pair.first.startJoint?.let { joint ->
                                 var i = circuitView.joints.indexOf(joint)
                                 if ( nodeMap.keys.contains(i)) {
-                                    ind = circuitView.joints[i].elementsJoined.indexOf(Pair(pair.first, false))
+                                    ind = circuitView.joints[i].elementsJoined.indexOf(Pair(pair.first, true))
                                     chckd[i]!!.add(ind)
                                     val synapse = mSynapse()
                                     synapse.to = nodeMap[i]
-                                    nodeMap[i]!!.synapses.add(synapse)
                                     synapse.from = nodeMap[start]
-                                    nodeMap[start]!!.synapses.add(synapse)
+                                    synapses.add(synapse)
+                                    done = true
                                 } else {
                                     joint.elementsJoined.forEach {
                                         if (pair != it)
