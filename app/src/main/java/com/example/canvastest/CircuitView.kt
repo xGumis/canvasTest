@@ -16,13 +16,11 @@ import android.widget.TextView
 import android.text.InputType
 
 
-
-
-
 class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     var elements: MutableList<Element> = mutableListOf()
     var joints = mutableListOf<Joint>()
+    private var nodes = mutableListOf<Int>()
     private var paint: Paint = Paint()
     private var catchedElement: Element? = null
     private var isStartCatched = true
@@ -34,10 +32,10 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     private var mStartY = 0f
     private var wasSomethigSelected: Element? = null
         set(value) {
-            field=value
+            field = value
             onSelectedChange(value != null)
         }
-    var onSelectedChange:(selected:Boolean)->Unit ={}
+    var onSelectedChange: (selected: Boolean) -> Unit = {}
 
 
     init {
@@ -81,7 +79,7 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                 else -> {
                 }
             }
-            println(it.isCatched(x,y))
+            println(it.isCatched(x, y))
         }
         wasSomethigSelected = catchedElement
 
@@ -240,7 +238,7 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         return true
     }
 
-    fun addElement(element: Element){
+    fun addElement(element: Element) {
         elements.add(element)
     }
 
@@ -248,7 +246,7 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         joints.forEach {
             if (it.elementsJoined.contains(oldEl)) {
                 it.elementsJoined.add(newEl)
-                if(newEl.second)
+                if (newEl.second)
                     newEl.first.startJoint = it
                 else
                     newEl.first.endJoint = it
@@ -259,19 +257,37 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         joint.elementsJoined.add(newEl)
         joint.elementsJoined.add(oldEl)
         joints.add(joint)
-        if(newEl.second)
+        if (newEl.second)
             newEl.first.startJoint = joint
         else
             newEl.first.endJoint = joint
-        if(oldEl.second)
+        if (oldEl.second)
             oldEl.first.startJoint = joint
         else
             oldEl.first.endJoint = joint
 
     }
 
+    private fun clearUnconnected() {
+        do {
+            var count = 0
+            var toErase = mutableListOf<Element>()
+            elements.forEach {
+                if (it.startJoint == null || it.endJoint == null) {
+                    unjoinElement(Pair(it, true))
+                    unjoinElement(Pair(it, false))
+                    toErase.add(it)
+                    count++
+                }
+            }
+            toErase.forEach {
+                elements.remove(it)
+            }
+        } while (count > 0)
+    }
+
     private fun unjoinElement(el: Pair<Element, Boolean>) {
-        if(el.second)
+        if (el.second)
             el.first.startJoint = null
         else
             el.first.endJoint = null
@@ -284,7 +300,7 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
             }
         }
         emptyJoint?.let {
-            if(it.elementsJoined.first().second)
+            if (it.elementsJoined.first().second)
                 it.elementsJoined.first().first.startJoint = null
             else
                 it.elementsJoined.first().first.endJoint = null
@@ -298,9 +314,8 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         invalidate()
     }
 
-    fun onDeleteSelectedView()
-    {
-        if(wasSomethigSelected != null) {
+    fun onDeleteSelectedView() {
+        if (wasSomethigSelected != null) {
             unjoinElement(Pair(wasSomethigSelected!!, true))
             unjoinElement(Pair(wasSomethigSelected!!, false))
             elements.remove(wasSomethigSelected!!)
@@ -309,17 +324,15 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         invalidate()
     }
 
-    fun onEditSelectedView()
-    {
-        when(wasSomethigSelected){
+    fun onEditSelectedView() {
+        when (wasSomethigSelected) {
             is Resistor -> editResistor(wasSomethigSelected as Resistor)
             is FlowSource -> editFlow(wasSomethigSelected as FlowSource)
             is TensionSource -> editTension(wasSomethigSelected as TensionSource)
         }
     }
 
-    private fun editResistor(resistor:Resistor)
-    {
+    private fun editResistor(resistor: Resistor) {
         val layout = LinearLayout(context)
         layout.orientation = LinearLayout.VERTICAL
         val info = TextView(context)
@@ -341,8 +354,7 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
             .show()
     }
 
-    private fun editFlow(flow:FlowSource)
-    {
+    private fun editFlow(flow: FlowSource) {
         val layout = LinearLayout(context)
         layout.orientation = LinearLayout.VERTICAL
         val info = TextView(context)
@@ -364,8 +376,7 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
             .show()
     }
 
-    private fun editTension(tension:TensionSource)
-    {
+    private fun editTension(tension: TensionSource) {
         val layout = LinearLayout(context)
         layout.orientation = LinearLayout.VERTICAL
         val info = TextView(context)
@@ -387,5 +398,64 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
             .show()
     }
 
+    fun findSynapses(): ArrayList<Synapse> {
+        clearUnconnected()
+        val synapseList = arrayListOf<Synapse>()
+        if (elements.count() > 0) {
+            findNodes()
+            var elementList = mutableListOf<Element>()
+            elementList.addAll(elements)
+            var joint: Joint? = null
+            var i = 0
+            if (nodes.count() == 0)
+                nodes.add(0)
+            do {
+                joint = joints[nodes[i]]
+                joint.elementsJoined.forEach { el ->
+                    if (elementList.contains(el.first)) {
+                        var pair = el
+                        var found = false
+                        val synapse = Synapse()
+                        do {
+                            synapse.from = joint
+                            synapse.elements.add(pair.first)
+                            elementList.remove(pair.first)
+                            if (pair.second) {
+                                pair.first.endJoint?.let {
+                                    if (nodes.contains(joints.indexOf(it))) {
+                                        synapse.to = it
+                                        synapseList.add(synapse)
+                                        found = true
+                                    }
+                                    else{
+                                        pair = it.elementsJoined.filter{ x -> x != Pair(pair.first,false) }.first()
+                                    }
+                                }
+                            } else {
+                                pair.first.startJoint?.let {
+                                    if (nodes.contains(joints.indexOf(it))) {
+                                        synapse.to = it
+                                        synapseList.add(synapse)
+                                        found = true
+                                    }
+                                    else{
+                                        pair = it.elementsJoined.filter{ x -> x != Pair(pair.first,true) }.first()
+                                    }
+                                }
+                            }
+                        } while (!found)
+                    }
+                }
+                i++
+            } while (i < nodes.count())
+        }
+        return synapseList
+    }
 
+    private fun findNodes(){
+        for (i in 0..joints.count() - 1)
+            if (joints[i].elementsJoined.count() > 2) {
+                nodes.add(i)
+            }
+    }
 }
