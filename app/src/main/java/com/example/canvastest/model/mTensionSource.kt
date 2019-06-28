@@ -1,6 +1,6 @@
 package com.example.canvastest.model
 
-class mTensionSoure(
+class mTensionSource(
     var tensionValue:Double,
     var from : mNode?
 )

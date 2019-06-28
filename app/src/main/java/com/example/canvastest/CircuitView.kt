@@ -18,9 +18,10 @@ import android.text.InputType
 
 class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
-    var elements: MutableList<Element> = mutableListOf()
-    var joints = mutableListOf<Joint>()
-    private var nodes = mutableListOf<Int>()
+    private var elements: MutableList<Element> = mutableListOf()
+    private var joints = mutableListOf<Joint>()
+    private var tNodes = mutableListOf<Int>()
+    var nodes = mutableListOf<Joint>()
     private var paint: Paint = Paint()
     private var catchedElement: Element? = null
     private var isStartCatched = true
@@ -388,7 +389,7 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         layout.addView(info)
         layout.addView(input)
         AlertDialog.Builder(context)
-            .setTitle("Natężenie")
+            .setTitle("Napięcie")
             .setView(layout)
             .setPositiveButton(android.R.string.yes, DialogInterface.OnClickListener { dialog, which ->
                 tension.tensionValue = input.text.toString().toDouble()
@@ -407,10 +408,10 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
             elementList.addAll(elements)
             var joint: Joint? = null
             var i = 0
-            if (nodes.count() == 0)
-                nodes.add(0)
+            if (tNodes.count() == 0)
+                tNodes.add(0)
             do {
-                joint = joints[nodes[i]]
+                joint = joints[tNodes[i]]
                 joint.elementsJoined.forEach { el ->
                     if (elementList.contains(el.first)) {
                         var pair = el
@@ -422,7 +423,7 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                             elementList.remove(pair.first)
                             if (pair.second) {
                                 pair.first.endJoint?.let {
-                                    if (nodes.contains(joints.indexOf(it))) {
+                                    if (tNodes.contains(joints.indexOf(it))) {
                                         synapse.to = it
                                         synapseList.add(synapse)
                                         found = true
@@ -433,7 +434,7 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                                 }
                             } else {
                                 pair.first.startJoint?.let {
-                                    if (nodes.contains(joints.indexOf(it))) {
+                                    if (tNodes.contains(joints.indexOf(it))) {
                                         synapse.to = it
                                         synapseList.add(synapse)
                                         found = true
@@ -447,7 +448,10 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                     }
                 }
                 i++
-            } while (i < nodes.count())
+            } while (i < tNodes.count())
+        }
+        tNodes.forEach {
+            nodes.add(joints[it])
         }
         return synapseList
     }
@@ -455,7 +459,7 @@ class CircuitView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     private fun findNodes(){
         for (i in 0..joints.count() - 1)
             if (joints[i].elementsJoined.count() > 2) {
-                nodes.add(i)
+                tNodes.add(i)
             }
     }
 }

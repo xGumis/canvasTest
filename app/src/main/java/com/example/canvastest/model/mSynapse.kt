@@ -6,7 +6,7 @@ class mSynapse
     var flowSource :mFlowSource? = null
 
     var resistorArray = mutableListOf<mResistor>()
-    var tensionArray = mutableListOf<mTensionSoure>()
+    var tensionArray = mutableListOf<mTensionSource>()
     var resistance :Double = 0.0
         get() {
             var res = 0.0
